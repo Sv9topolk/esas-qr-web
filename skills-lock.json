@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "skills": {
+    "clean-typescript": {
+      "source": "academind/ai-config",
+      "sourceType": "github",
+      "computedHash": "ff5d16ddd5332d27e13f7661a06967d38321efccc5b3e881c85d7d38231407d1"
+    },
+    "modern-accessible-html-jsx": {
+      "source": "academind/ai-config",
+      "sourceType": "github",
+      "computedHash": "6c1c825d0357c812981a6bac3e0650f11089228a194fe6a0dbec89ccda41ccfe"
+    },
+    "modern-best-practice-react-components": {
+      "source": "academind/ai-config",
+      "sourceType": "github",
+      "computedHash": "44bc7b360768e9c1f498b76efcf827cc6303842f7358fd3a5d44c6017bb568cc"
+    },
+    "use-modern-browser-apis": {
+      "source": "academind/ai-config",
+      "sourceType": "github",
+      "computedHash": "a878ed73965153eff1f86ce6b7266d8235620427984e52a714abe9c3683347a7"
+    },
+    "web-security": {
+      "source": "academind/ai-config",
+      "sourceType": "github",
+      "computedHash": "5b461f98a8cee3fa0954c4032e235277c4e9078f9ededa4a6dd728755bd304e2"
+    }
+  }
+}

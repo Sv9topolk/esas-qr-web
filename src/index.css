@@ -1,0 +1,47 @@
+@import './styles/variables.css';
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+body {
+	font-family: var(--sans);
+	font-size: 16px;
+	line-height: 1.5;
+	color: var(--color-text-primary);
+	background-color: var(--color-bg);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	overflow: hidden;
+}
+
+.main {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+/* Убираем дефолтные стили кнопок */
+button {
+	font-family: inherit;
+}
+
+/* Сброс для списков */
+ul, ol {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}

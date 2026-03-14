@@ -1,0 +1,19 @@
+.header {
+	background-color: var(--color-primary);
+	color: var(--color-text-on-primary);
+	padding: 16px 20px;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.header__logo {
+	height: 40px;
+	width: auto;
+}
+
+.header__title {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 500;
+}

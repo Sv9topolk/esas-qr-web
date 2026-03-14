@@ -1,0 +1,12 @@
+:root {
+	/* Цветовая палитра */
+	--color-primary: rgba(255, 91, 34, 1); /* оранжевый - акцент */
+	--color-bg: #ffffff; /* фон приложения */
+	--color-text-primary: rgba(11, 31, 53, 1); /* основной текст */
+	--color-text-secondary: rgba(91, 94, 103, 1); /* вспомогательный текст */
+	--color-text-on-primary: #ffffff; /* текст на акцентном фоне */
+
+	/* Системные шрифты */
+	--sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+	--mono: ui-monospace, Consolas, monospace;
+}
