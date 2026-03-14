@@ -3,6 +3,8 @@
 	display: flex;
 	flex-direction: column;
 	position: relative;
+	height: 100%;
+	overflow: hidden;
 }
 
 .scanner-view__idle {
@@ -34,12 +36,16 @@
 	flex: 1;
 	display: flex;
 	flex-direction: column;
+	overflow: hidden;
 	touch-action: none; /* Предотвращаем зум страницы при жестах */
 }
 
 .scanner-view__reader {
 	flex: 1;
-	min-height: 300px;
+	width: 100%;
+	min-height: 0; /* Важно для flexbox */
+	position: relative;
+	overflow: hidden;
 }
 
 .scanner-view__overlay {
@@ -47,7 +53,7 @@
 	top: 0;
 	left: 0;
 	right: 0;
-	bottom: 60px;
+	bottom: 0;
 	pointer-events: none;
 	display: flex;
 	align-items: center;
@@ -99,11 +105,11 @@
 	display: flex;
 	gap: 12px;
 	padding: 16px;
+	padding-bottom: max(16px, env(safe-area-inset-bottom));
 	background-color: var(--color-bg);
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
+	flex-shrink: 0;
+	position: relative;
+	z-index: 10;
 }
 
 .scanner-view__control-btn {
@@ -117,6 +123,7 @@
 	color: var(--color-text-primary);
 	cursor: pointer;
 	transition: background-color 0.2s ease;
+	min-height: 44px; /* Минимальный размер для touch targets */
 }
 
 .scanner-view__control-btn:hover {
@@ -138,7 +145,7 @@
 	padding: 12px 16px;
 	border-radius: 8px;
 	font-size: 14px;
-	z-index: 10;
+	z-index: 20;
 }
 
 /* Индикатор размера прицела */
@@ -155,7 +162,7 @@
 	align-items: center;
 	gap: 12px;
 	font-size: 14px;
-	z-index: 10;
+	z-index: 20;
 	animation: fadeIn 0.2s ease;
 }
 
@@ -187,7 +194,14 @@
 }
 
 /* Стилизация html5-qrcode */
+#qr-reader {
+	width: 100%;
+	height: 100%;
+}
+
 #qr-reader video {
 	object-fit: cover;
+	width: 100%;
+	height: 100%;
 	border-radius: 0;
 }

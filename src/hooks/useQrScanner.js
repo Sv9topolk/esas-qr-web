@@ -89,19 +89,9 @@ export function useQrScanner({ onScanSuccess, onScanFailure }) {
 					onScanSuccess(decodedText);
 				},
 				(scanError) => {
-					// Игнорируем NotFoundException - нормальные ошибки при сканировании
-					// Библиотека может передавать ошибку как строку или объект
-					const errorStr = String(scanError || '');
-					const isNotFoundException =
-						scanError?.name === 'NotFoundException' ||
-						errorStr.includes('NotFoundException') ||
-						errorStr.includes('No MultiFormat Readers');
-
-					if (!isNotFoundException) {
-						const errorMessage = scanError?.message || 'Ошибка сканирования';
-						setError(errorMessage);
-						onScanFailure(scanError);
-					}
+					// Игнорируем все ошибки сканирования - они нормальны при работе QR-сканера
+					// Библиотека постоянно вызывает этот callback когда QR-код не найден в кадре
+					// Ошибки UI показываем только для критичных проблем (при запуске/остановке камеры)
 				}
 			);
 

@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Header } from './components/Header';
+import { Footer } from './components/Footer';
 import { ScannerView } from './components/ScannerView';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { Toast } from './components/Toast';
@@ -123,6 +124,7 @@ function App() {
 					error={qrScanner.error}
 				/>
 			</main>
+			<Footer />
 			<ConfirmDialog
 				url={confirmedUrl || ''}
 				visible={scanningState === EScanningState.CONFIRMING}
