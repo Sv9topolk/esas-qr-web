@@ -34,6 +34,7 @@
 	flex: 1;
 	display: flex;
 	flex-direction: column;
+	touch-action: none; /* Предотвращаем зум страницы при жестах */
 }
 
 .scanner-view__reader {
@@ -54,16 +55,20 @@
 }
 
 .scanner-view__reticle {
-	width: 70%;
-	height: 70%;
+	/* Базовый размер - будет переопределен через CSS переменную */
+	width: var(--reticle-size, 70%);
+	height: var(--reticle-size, 70%);
 	max-width: 320px;
 	max-height: 320px;
+	min-width: 100px;
+	min-height: 100px;
 	border: 3px solid rgba(255, 255, 255, 0.8);
 	border-radius: 16px;
 	box-shadow:
 		0 0 0 9999px rgba(0, 0, 0, 0.5),
 		0 0 20px rgba(255, 91, 34, 0.3);
 	position: relative;
+	transition: width 0.15s ease, height 0.15s ease;
 }
 
 .scanner-view__reticle::before,
@@ -134,6 +139,51 @@
 	border-radius: 8px;
 	font-size: 14px;
 	z-index: 10;
+}
+
+/* Индикатор размера прицела */
+.scanner-view__size-indicator {
+	position: absolute;
+	top: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: rgba(11, 31, 53, 0.9);
+	color: white;
+	padding: 8px 16px;
+	border-radius: 20px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 14px;
+	z-index: 10;
+	animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateX(-50%) translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(-50%) translateY(0);
+	}
+}
+
+.scanner-view__reset-btn {
+	background-color: var(--color-primary);
+	color: white;
+	border: none;
+	border-radius: 16px;
+	padding: 4px 12px;
+	font-size: 12px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.scanner-view__reset-btn:hover {
+	background-color: rgba(255, 91, 34, 0.9);
 }
 
 /* Стилизация html5-qrcode */
