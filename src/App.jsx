@@ -108,7 +108,12 @@ function App() {
 
 	return (
 		<>
-			<Header />
+			<Header
+				isScanning={
+					scanningState === EScanningState.SCANNING ||
+					scanningState === EScanningState.CONFIRMING
+				}
+			/>
 			<main className="main">
 				<ScannerView
 					isScanning={

@@ -129,12 +129,22 @@ export function ScannerView({
 	}, [isScanning, onActivateCamera]);
 
 	// Вычисляем размер прицела в процентах
-	const reticleSizePercent = Math.round(50 * reticleScale); // 50% при scale=1.0
+	const reticleSizePercent = Math.round(66 * reticleScale); // 66% при scale=1.0
 
 	return (
 		<div className="scanner-view" ref={containerRef}>
 			{!isScanning ? (
 				<div className="scanner-view__idle">
+					<div className="scanner-view__instructions">
+						<h2 className="scanner-view__instructions-title">Оплата парковки</h2>
+						<p className="scanner-view__instructions-text">
+							Наведите камеру телефона на QR-код и перейдите по ссылке для оплаты через
+							банковское приложение.
+						</p>
+						<p className="scanner-view__instructions-text">
+							И еще какой-то текст...
+						</p>
+					</div>
 					<button className="scanner-view__button" onClick={onStart}>
 						Сканировать QR
 					</button>
@@ -146,15 +156,17 @@ export function ScannerView({
 					onTouchMove={handleTouchMove}
 					onTouchEnd={handleTouchEnd}
 				>
-					<div id="qr-reader" className="scanner-view__reader"></div>
-					<div className="scanner-view__overlay">
-						<div
-							className="scanner-view__reticle"
-							style={{
-								'--reticle-size': `${reticleSizePercent}%`,
-								transform: `scale(${reticleScale})`,
-							}}
-						></div>
+					<div className="scanner-view__camera-wrapper">
+						<div id="qr-reader" className="scanner-view__reader"></div>
+						<div className="scanner-view__overlay">
+							<div
+								className="scanner-view__reticle"
+								style={{
+									'--reticle-size': `${reticleSizePercent}%`,
+									transform: `scale(${reticleScale})`,
+								}}
+							></div>
+						</div>
 					</div>
 					<div className="scanner-view__controls">
 						{torchSupported && (

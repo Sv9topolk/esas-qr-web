@@ -10,6 +10,29 @@
 .header__logo {
 	height: 40px;
 	width: auto;
+	flex-shrink: 0;
+}
+
+.header__content {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.header__spinner {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	border: 2px solid var(--color-text-on-primary);
+	border-top-color: transparent;
+	border-radius: 50%;
+	animation: header-spinner-spin 0.8s linear infinite;
+}
+
+@keyframes header-spinner-spin {
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 .header__title {
