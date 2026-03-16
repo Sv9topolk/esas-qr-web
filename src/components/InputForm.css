@@ -1,0 +1,97 @@
+.input-form {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	padding: 20px;
+	max-width: 500px;
+	margin: 0 auto;
+	width: 100%;
+}
+
+.input-form__instructions {
+	text-align: center;
+	color: var(--color-text-secondary);
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.input-form__field {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.input-form__error {
+	color: #ff4d4f;
+	font-size: 12px;
+	min-height: 16px;
+}
+
+/* Стилизация Ant Design Tabs */
+.input-form .ant-tabs {
+	overflow: visible;
+}
+
+.input-form .ant-tabs-nav {
+	margin-bottom: 16px;
+}
+
+.input-form .ant-tabs-tab {
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.input-form .ant-tabs-tab-btn {
+	color: var(--color-text-secondary);
+}
+
+.input-form .ant-tabs-tab-active .ant-tabs-tab-btn {
+	color: var(--color-primary);
+}
+
+.input-form .ant-tabs-ink-bar {
+	background-color: var(--color-primary);
+}
+
+.input-form .ant-input {
+	font-size: 16px;
+	padding: 12px 16px;
+	border-radius: 8px;
+}
+
+.input-form .ant-input:focus,
+.input-form .ant-input-focused {
+	border-color: var(--color-primary);
+	box-shadow: 0 0 0 2px rgba(255, 91, 34, 0.1);
+}
+
+.input-form .ant-input-status-error {
+	border-color: #ff4d4f;
+}
+
+.input-form .ant-input-status-error:focus,
+.input-form .ant-input-status-error-focused {
+	border-color: #ff4d4f;
+	box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1);
+}
+
+/* Стилизация кнопки */
+.input-form .ant-btn-primary {
+	background-color: var(--color-primary);
+	border-color: var(--color-primary);
+	height: 48px;
+	font-size: 16px;
+	font-weight: 500;
+	border-radius: 12px;
+}
+
+.input-form .ant-btn-primary:hover:not(:disabled) {
+	background-color: rgba(255, 91, 34, 0.9);
+	border-color: rgba(255, 91, 34, 0.9);
+}
+
+.input-form .ant-btn-primary:disabled {
+	background-color: rgba(0, 0, 0, 0.1);
+	border-color: rgba(0, 0, 0, 0.1);
+	color: var(--color-text-secondary);
+}

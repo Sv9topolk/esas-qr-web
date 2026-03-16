@@ -1,8 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { ScannerView } from './components/ScannerView';
-import { ConfirmDialog } from './components/ConfirmDialog';
+import { InputForm } from './components/InputForm';
+import { ResultDialog } from './components/ResultDialog';
 import { Toast } from './components/Toast';
 import { useQrScanner } from './hooks/useQrScanner';
 import { isValidUrl } from './utils/validators';
@@ -13,19 +14,19 @@ import './index.css';
  * Состояния приложения
  * @enum {string}
  */
-const EScanningState = {
-	IDLE: 'idle', // Ожидание начала сканирования
-	SCANNING: 'scanning', // Идет сканирование
-	CONFIRMING: 'confirming', // Подтверждение перехода по ссылке
+const EAppState = {
+	FORM: 'form', // Форма ввода
+	SCANNING: 'scanning', // Сканирование QR
+	RESULT: 'result', // Результат
 };
 
 function App() {
-	const [scanningState, setScanningState] = useState(EScanningState.IDLE);
-	const [confirmedUrl, setConfirmedUrl] = useState(null);
+	const [appState, setAppState] = useState(EAppState.FORM);
 	const [toast, setToast] = useState({
 		visible: false,
 		message: '',
 	});
+	const cameraStartedRef = useRef(false);
 
 	/**
 	 * Показать toast уведомление
@@ -45,8 +46,7 @@ function App() {
 	const handleScanSuccess = useCallback(
 		(decodedText) => {
 			if (isValidUrl(decodedText)) {
-				setConfirmedUrl(decodedText);
-				setScanningState(EScanningState.CONFIRMING);
+				setAppState(EAppState.RESULT);
 			} else {
 				showToast('QR-код не распознан как ссылка для оплаты');
 			}
@@ -72,70 +72,73 @@ function App() {
 	});
 
 	/**
-	 * Начать сканирование
+	 * Обработка отправки формы
+	 * @param {Object} data - Данные формы
+	 * @param {string} data.type - Тип ввода ('car' | 'ticket')
+	 * @param {string} data.value - Введенное значение
 	 */
-	const handleStartScanning = async () => {
-		setScanningState(EScanningState.SCANNING);
-	};
+	const handleFormSubmit = useCallback(async (data) => {
+		cameraStartedRef.current = false;
+		setAppState(EAppState.SCANNING);
+	}, []);
 
 	/**
-	 * Остановить сканирование
+	 * Запуск камеры при переходе в состояние SCANNING
 	 */
-	const handleStopScanning = async () => {
-		await qrScanner.stopScanning();
-		setScanningState(EScanningState.IDLE);
-	};
-
-	/**
-	 * Подтвердить переход по ссылке
-	 */
-	const handleConfirmNavigation = async () => {
-		if (confirmedUrl) {
-			window.open(confirmedUrl, '_blank', 'noopener noreferrer');
+	useEffect(() => {
+		if (appState === EAppState.SCANNING && !cameraStartedRef.current) {
+			cameraStartedRef.current = true;
+			// Небольшая задержка для уверенности что DOM обновлен
+			const timer = setTimeout(() => {
+				qrScanner.startScanning();
+			}, 100);
+			return () => clearTimeout(timer);
 		}
-		setConfirmedUrl(null);
-		setScanningState(EScanningState.IDLE);
-		await qrScanner.stopScanning();
-	};
+	}, [appState, qrScanner]);
 
 	/**
-	 * Отменить переход по ссылке и вернуться к сканированию
+	 * Остановить сканирование и вернуться к форме
 	 */
-	const handleCancelNavigation = () => {
-		setConfirmedUrl(null);
-		setScanningState(EScanningState.SCANNING);
-	};
+	const handleStopScanning = useCallback(async () => {
+		cameraStartedRef.current = false;
+		await qrScanner.stopScanning();
+		setAppState(EAppState.FORM);
+	}, [qrScanner]);
+
+	/**
+	 * Вернуться к форме из результата
+	 */
+	const handleReturnToForm = useCallback(() => {
+		cameraStartedRef.current = false;
+		setAppState(EAppState.FORM);
+	}, []);
 
 	return (
 		<>
 			<Header
-				isScanning={
-					scanningState === EScanningState.SCANNING ||
-					scanningState === EScanningState.CONFIRMING
-				}
+				isScanning={appState === EAppState.SCANNING || appState === EAppState.RESULT}
 			/>
 			<main className="main">
-				<ScannerView
-					isScanning={
-						scanningState === EScanningState.SCANNING ||
-						scanningState === EScanningState.CONFIRMING
-					}
-					onStart={handleStartScanning}
-					onStop={handleStopScanning}
-					onActivateCamera={qrScanner.startScanning}
-					torchSupported={qrScanner.torchSupported}
-					torchEnabled={qrScanner.torchEnabled}
-					onToggleTorch={qrScanner.toggleTorch}
-					error={qrScanner.error}
-				/>
+				{appState === EAppState.FORM ? (
+					<InputForm onSubmit={handleFormSubmit} />
+				) : (
+					<ScannerView
+						isScanning={true}
+						onStop={handleStopScanning}
+						torchSupported={qrScanner.torchSupported}
+						torchEnabled={qrScanner.torchEnabled}
+						onToggleTorch={qrScanner.toggleTorch}
+						error={qrScanner.error}
+					/>
+				)}
 			</main>
 			<Footer />
-			<ConfirmDialog
-				url={confirmedUrl || ''}
-				visible={scanningState === EScanningState.CONFIRMING}
-				onConfirm={handleConfirmNavigation}
-				onCancel={handleCancelNavigation}
-			/>
+			{appState === EAppState.RESULT && (
+				<ResultDialog
+					visible={true}
+					onReturnToForm={handleReturnToForm}
+				/>
+			)}
 			<Toast message={toast.message} visible={toast.visible} />
 		</>
 	);

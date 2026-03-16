@@ -1,0 +1,90 @@
+.dialog-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 20px;
+}
+
+.result-dialog {
+	background-color: var(--color-bg);
+	border-radius: 12px;
+	padding: 24px;
+	max-width: 400px;
+	width: 100%;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.result-dialog__title {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 600;
+	color: var(--color-text-primary);
+	text-align: center;
+}
+
+.result-dialog__loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16px;
+	padding: 20px 0;
+}
+
+.result-dialog__loading-text {
+	margin: 0;
+	font-size: 14px;
+	color: var(--color-text-secondary);
+}
+
+.result-dialog__message {
+	padding: 16px;
+	border-radius: 8px;
+	font-size: 14px;
+	line-height: 1.5;
+	text-align: center;
+}
+
+.result-dialog__message_success {
+	background-color: rgba(82, 196, 26, 0.1);
+	color: rgba(82, 196, 26, 1);
+	border: 1px solid rgba(82, 196, 26, 0.3);
+}
+
+.result-dialog__message_warning {
+	background-color: rgba(250, 173, 20, 0.1);
+	color: rgba(250, 173, 20, 1);
+	border: 1px solid rgba(250, 173, 20, 0.3);
+}
+
+.result-dialog__button {
+	height: 48px;
+	font-size: 16px;
+	font-weight: 500;
+	border-radius: 12px;
+	background-color: var(--color-primary);
+	border-color: var(--color-primary);
+}
+
+.result-dialog__button:hover {
+	background-color: rgba(255, 91, 34, 0.9);
+	border-color: rgba(255, 91, 34, 0.9);
+}
+
+/* Стилизация Ant Design Spin */
+.result-dialog .ant-spin {
+	color: var(--color-primary);
+}
+
+.result-dialog .ant-spin-dot-item {
+	background-color: var(--color-primary);
+}

@@ -1,13 +1,11 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import './ScannerView.css';
 
 /**
  * Компонент представления сканера QR-кодов
  * @param {Object} props - Свойства компонента
  * @param {boolean} props.isScanning - Активен ли сканер
- * @param {Function} props.onStart - Callback для начала сканирования (изменение состояния)
  * @param {Function} props.onStop - Callback остановки сканирования
- * @param {Function} props.onActivateCamera - Callback для активации камеры после рендера
  * @param {boolean} props.torchSupported - Поддерживается ли фонарь
  * @param {boolean} props.torchEnabled - Включен ли фонарь
  * @param {Function} props.onToggleTorch - Callback переключения фонаря
@@ -15,16 +13,13 @@ import './ScannerView.css';
  */
 export function ScannerView({
 	isScanning,
-	onStart,
 	onStop,
-	onActivateCamera,
 	torchSupported,
 	torchEnabled,
 	onToggleTorch,
 	error,
 }) {
 	const containerRef = useRef(null);
-	const cameraActivatedRef = useRef(false);
 
 	// Состояние для размера прицела (0.5 - 1.5, где 1.0 = 70% по умолчанию)
 	const [reticleScale, setReticleScale] = useState(1.0);
@@ -101,111 +96,66 @@ export function ScannerView({
 		setReticleScale(1.0);
 	}, []);
 
-	// Активируем камеру после того как элемент появился в DOM
-	useEffect(() => {
-		let timer;
-
-		if (isScanning && !cameraActivatedRef.current) {
-			cameraActivatedRef.current = true;
-			// Небольшая задержка чтобы убедиться что DOM обновлен
-			timer = setTimeout(() => {
-				onActivateCamera();
-			}, 100);
-		}
-
-		if (!isScanning) {
-			cameraActivatedRef.current = false;
-			// Сбрасываем размер прицела при остановке сканирования (асинхронно)
-			timer = setTimeout(() => {
-				setReticleScale(1.0);
-			}, 0);
-		}
-
-		return () => {
-			if (timer) {
-				clearTimeout(timer);
-			}
-		};
-	}, [isScanning, onActivateCamera]);
-
 	// Вычисляем размер прицела в процентах
 	const reticleSizePercent = Math.round(66 * reticleScale); // 66% при scale=1.0
 
 	return (
 		<div className="scanner-view" ref={containerRef}>
-			{!isScanning ? (
-				<div className="scanner-view__idle">
-					<div className="scanner-view__instructions">
-						<h2 className="scanner-view__instructions-title">Оплата парковки</h2>
-						<p className="scanner-view__instructions-text">
-							Наведите камеру телефона на QR-код и перейдите по ссылке для оплаты через
-							банковское приложение.
-						</p>
-						<p className="scanner-view__instructions-text">
-							И еще какой-то текст...
-						</p>
+			<div
+				className="scanner-view__scanning"
+				onTouchStart={handleTouchStart}
+				onTouchMove={handleTouchMove}
+				onTouchEnd={handleTouchEnd}
+			>
+				<div className="scanner-view__camera-wrapper">
+					<div id="qr-reader" className="scanner-view__reader"></div>
+					<div className="scanner-view__overlay">
+						<div
+							className="scanner-view__reticle"
+							style={{
+								'--reticle-size': `${reticleSizePercent}%`,
+								transform: `scale(${reticleScale})`,
+							}}
+						></div>
 					</div>
-					<button className="scanner-view__button" onClick={onStart}>
-						Сканировать QR
-					</button>
 				</div>
-			) : (
-				<div
-					className="scanner-view__scanning"
-					onTouchStart={handleTouchStart}
-					onTouchMove={handleTouchMove}
-					onTouchEnd={handleTouchEnd}
-				>
-					<div className="scanner-view__camera-wrapper">
-						<div id="qr-reader" className="scanner-view__reader"></div>
-						<div className="scanner-view__overlay">
-							<div
-								className="scanner-view__reticle"
-								style={{
-									'--reticle-size': `${reticleSizePercent}%`,
-									transform: `scale(${reticleScale})`,
-								}}
-							></div>
-						</div>
-					</div>
-					<div className="scanner-view__controls">
-						{torchSupported && (
-							<button
-								className="scanner-view__control-btn"
-								onClick={onToggleTorch}
-								type="button"
-							>
-								{torchEnabled ? 'Выключить фонарь' : 'Включить фонарь'}
-							</button>
-						)}
+				<div className="scanner-view__controls">
+					{torchSupported && (
 						<button
-							className="scanner-view__control-btn scanner-view__control-btn_cancel"
-							onClick={onStop}
+							className="scanner-view__control-btn"
+							onClick={onToggleTorch}
 							type="button"
 						>
-							Отмена
+							{torchEnabled ? 'Выключить фонарь' : 'Включить фонарь'}
+						</button>
+					)}
+					<button
+						className="scanner-view__control-btn scanner-view__control-btn_cancel"
+						onClick={onStop}
+						type="button"
+					>
+						Отмена
+					</button>
+				</div>
+				{error && (
+					<div className="scanner-view__error" role="alert">
+						{error}
+					</div>
+				)}
+				{/* Индикатор размера прицела */}
+				{reticleScale !== 1.0 && (
+					<div className="scanner-view__size-indicator">
+						<span>Размер: {Math.round(reticleScale * 100)}%</span>
+						<button
+							className="scanner-view__reset-btn"
+							onClick={handleResetReticle}
+							type="button"
+						>
+							Сбросить
 						</button>
 					</div>
-					{error && (
-						<div className="scanner-view__error" role="alert">
-							{error}
-						</div>
-					)}
-					{/* Индикатор размера прицела */}
-					{reticleScale !== 1.0 && (
-						<div className="scanner-view__size-indicator">
-							<span>Размер: {Math.round(reticleScale * 100)}%</span>
-							<button
-								className="scanner-view__reset-btn"
-								onClick={handleResetReticle}
-								type="button"
-							>
-								Сбросить
-							</button>
-						</div>
-					)}
-				</div>
-			)}
+				)}
+			</div>
 		</div>
 	);
 }
